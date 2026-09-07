@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { LayoutDashboard, Columns3, Library, ClipboardCheck, ChevronRight, ArrowUpRight, ArrowUp, FileText, Search, MessageSquare, Plus, X, Menu, PanelRightClose, Bot, Download, Copy, Check, Circle, ShieldCheck, RefreshCw, LockKeyhole, ExternalLink, Square, Trash2, Clock3, ArrowRight, Sparkles, SlidersHorizontal, BookOpen, LogOut, Mic, MicOff, Volume2, VolumeX, Radar } from 'lucide-react';
-import { api, apiFetch, openDocument } from './client.js';
+import { api, apiFetch, openDocument, API_BASE } from './client.js';
 import { useVoiceInput, useReadAloud } from './voice.js';
 import './styles.css';
 import './theme.css';
@@ -115,7 +115,7 @@ function downloadText(text, name) {
   setTimeout(() => URL.revokeObjectURL(url), 500);
 }
 function App() {
-  const [session, setSession] = useState(null);
+  const [session, setSession] = useState(API_BASE ? { authorized: false } : null);
   const [page, setPage] = useState('overview');
   const [docs, setDocs] = useState([]);
   const [status, setStatus] = useState(null);
@@ -141,6 +141,8 @@ function App() {
     }
   };
   useEffect(() => {
+    // Remote tokens are memory-only; there is no session to restore after a reload.
+    if (API_BASE) return;
     api('/api/session').then(setSession).catch(e => setLoadError(e.message));
   }, []);
   useEffect(() => {

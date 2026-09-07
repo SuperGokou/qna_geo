@@ -1,3 +1,4 @@
+import { requestJson } from './request.js';
 export const API_BASE = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/$/, '');
 let token = '';
 export function clearToken() { token = ''; }
@@ -8,9 +9,9 @@ export async function apiFetch(url, options = {}) {
 }
 export async function api(url, options) {
   if (location.hostname.endsWith('github.io') && !API_BASE) throw new Error('后端尚未配置，请设置仓库变量 VITE_API_BASE_URL 后重新部署。');
-  const response = await apiFetch(url, options);
-  let data;
-  try { data = await response.json(); } catch { throw new Error('无法连接问答服务，请检查后端地址与网络。'); }
+  const headers = new Headers(options?.headers || {});
+  if (token) headers.set('Authorization', `Bearer ${token}`);
+  const { response, data } = await requestJson(`${API_BASE}${url}`, { ...options, headers }, url === '/api/chat' ? 70000 : 12000);
   if (!response.ok) throw new Error(data.error || '请求失败，请重试。');
   if (url === '/api/login' && data.token) token = data.token;
   if (url === '/api/logout') token = '';
