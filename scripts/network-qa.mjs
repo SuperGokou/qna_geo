@@ -9,7 +9,7 @@ try {
   page.on('request', request => { if (request.url().includes('/api/session')) sessionRequests++; });
   // Leave all remote requests pending, simulating an unreachable backend.
   await page.route('https://qna-geo-api.supergokou-geo.workers.dev/**', () => {});
-  await page.goto(process.env.QA_URL || 'http://127.0.0.1:4317');
+  await page.goto(process.env.QA_URL || 'https://supergokou.github.io/qna_geo/');
   await page.getByLabel('访问密码', { exact: true }).waitFor({ timeout: 5000 });
   assert.equal(sessionRequests, 0);
   await page.getByLabel('访问密码', { exact: true }).fill('connectivity-test');
