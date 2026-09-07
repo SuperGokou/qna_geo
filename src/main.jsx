@@ -5,6 +5,7 @@ import { api, apiFetch, openDocument, API_BASE } from './client.js';
 import { useVoiceInput, useReadAloud } from './voice.js';
 import './styles.css';
 import './theme.css';
+import DecisionFocus from './DecisionFocus.jsx';
 const labels = {
   confirmed: '项目已确认',
   claim: '供应商口径',
@@ -208,7 +209,7 @@ function App() {
       <header className="topbar"><div className="breadcrumb"><IconButton icon={Menu} label="打开导航" className="icon-button mobile-menu" onClick={() => setNavOpen(true)} /><span>合作研究</span><ChevronRight size={13} /><strong>{nav.find(x => x[0] === page)?.[2]}</strong></div><div className="topbar-end"><span className="confidential"><LockKeyhole size={13} />内部资料</span><span className="date">2026.09.07</span><IconButton icon={MessageSquare} label="打开决策助手" className="icon-button mobile-chat" onClick={() => setChatOpen(true)} /></div></header>
       <main className="main-content">
         {loadError && <div className="error-banner">{loadError}<button onClick={refresh}>重新加载</button></div>}
-        {page === 'overview' && <Overview docs={docs} status={status} navigate={navigate} ask={askQuestion} />}
+        {page === 'overview' && <Overview docs={docs} status={status} navigate={navigate} ask={askQuestion} notify={notify} />}
         {page === 'compare' && <Comparison ask={askQuestion} />}
         {page === 'library' && <LibraryPage docs={docs} query={query} setQuery={setQuery} setSource={setSource} />}
         {page === 'tasks' && <Tasks notify={notify} />}
@@ -225,15 +226,16 @@ function Overview({
   docs,
   status,
   navigate,
-  ask
+  ask,
+  notify
 }) {
   return <>
     <div className="page-heading"><div><div className="eyebrow">区域代理合作 / 研究底稿</div><h1>扬州 · 泰州 GEO 合作决策</h1><p>迈富时、Vigilath、智星销的产品与代理条件评估</p></div><span className="revision">供讨论</span></div>
-    <div className="metrics"><div><span>候选合作伙伴</span><strong>03<small>家</small></strong></div><div><span>已归档参考资料</span><strong>{String(docs.length || 8).padStart(2, '0')}<small>份</small></strong></div><div><span>PDF 原文覆盖</span><strong>{status?.pages || 182}<small>页</small></strong></div></div>
+    <div className="evidence-meta"><span>3 家候选方</span><span>{docs.length || 8} 份资料 · {status?.pages || 182} 页</span><span>资料日期 2026.09.07</span></div>
     <section className="decision"><div className="section-label">01 / 当前判断<Badge>有条件建议</Badge></div><h2>建议先安排迈富时产品实测，<br />同步取得另外两家的代理条件。</h2><p>迈富时优先验证产品与交付能力，Vigilath重点核对白标与定制方案，智星销作为专项服务备选。目前三家的报价和授权口径尚不一致，暂不建议直接确定合作方。</p><div className="decision-actions"><DocumentLink className="primary-button" href="/api/documents/brief/file" target="_blank" rel="noreferrer"><FileText size={16} />查看技术简报<ArrowUpRight size={15} /></DocumentLink><button className="text-button" onClick={() => navigate('compare')}>比较三家供应商<ArrowRight size={16} /></button></div><div className="decision-foot"><ShieldCheck size={14} />尚未完成后台实测；不构成效果排名或采购批准。</div></section>
-    <section><div className="section-title"><h2>候选伙伴</h2><button className="text-button muted" onClick={() => navigate('compare')}>完整对比<ChevronRight size={14} /></button></div><div className="vendor-list">{vendors.map((v, i) => <button className="vendor-row" key={v.id} onClick={() => ask(`${v.name}的技术能力和区域代理匹配度如何？`, v.id)}><span className={`vendor-logo ${v.color}`}>{v.mark}</span><div className="vendor-info"><strong>{v.name}</strong><span>{v.headline}</span></div><span className={`vendor-tag ${v.color}`}>{v.tag}</span><ArrowUpRight size={17} /></button>)}</div></section>
-    <section><div className="section-title"><h2>需要重点关注</h2><span className="small-label">3 项关键边界</span></div><div className="attention-list">{[['01', '80%是招商毛利口径，不是净利润', '36,800元产品范围、返佣与交付成本尚未确认。', '迈富时80%利润具体怎么算？'], ['02', '代理政策仍未形成同口径对比', 'Vigilath与智星销的渠道价格和地区授权待沟通。', '三家的代理价格可以直接比较吗？'], ['03', '扬州测算不能直接外推至泰州', '原市场报告早于两地业务范围确认。', '泰州市场规模目前有哪些依据？']].map(([n, title, detail, q]) => <button key={n} onClick={() => ask(q)}><span>{n}</span><div><strong>{title}</strong><p>{detail}</p></div><ArrowUpRight size={16} /></button>)}</div></section>
-    <section><div className="section-title"><h2>决策报告</h2><button className="text-button muted" onClick={() => navigate('library')}>全部资料<ChevronRight size={14} /></button></div><div className="report-grid">{docs.filter(d => d.category === '决策报告').map(d => <DocumentLink className="report-tile" key={d.id} href={`/api/documents/${d.id}/file`} target="_blank" rel="noreferrer"><div className="report-image"><SecureImage src={d.preview} alt={`${d.title}首页`} /><span>PDF · {d.pages} 页</span></div><div className="report-caption"><strong>{d.title}</strong><span>{d.date}<ArrowUpRight size={15} /></span></div></DocumentLink>)}</div></section>
+    <DecisionFocus vendors={vendors} DocumentLink={DocumentLink} ask={ask} notify={notify} />
+    <section><div className="section-title"><h2>03 / 签约前仍缺什么</h2><span className="small-label">3 项关键边界</span></div><div className="attention-list">{[['01', '80%是招商毛利口径，不是净利润', '36,800元产品范围、返佣与交付成本尚未确认。', '迈富时80%利润具体怎么算？'], ['02', '代理政策仍未形成同口径对比', 'Vigilath与智星销的渠道价格和地区授权待沟通。', '三家的代理价格可以直接比较吗？'], ['03', '扬州测算不能直接外推至泰州', '原市场报告早于两地业务范围确认。', '泰州市场规模目前有哪些依据？']].map(([n, title, detail, q]) => <button key={n} onClick={() => ask(q)}><span>{n}</span><div><strong>{title}</strong><p>{detail}</p></div><ArrowUpRight size={16} /></button>)}</div></section>
+    <section><div className="section-title"><h2>研究依据</h2><button className="text-button muted" onClick={() => navigate('library')}>全部资料<ChevronRight size={14} /></button></div><div className="report-grid">{docs.filter(d => d.category === '决策报告').map(d => <DocumentLink className="report-tile" key={d.id} href={`/api/documents/${d.id}/file`} target="_blank" rel="noreferrer"><div className="report-image"><SecureImage src={d.preview} alt={`${d.title}首页`} /><span>PDF · {d.pages} 页</span></div><div className="report-caption"><strong>{d.title}</strong><span>{d.date}<ArrowUpRight size={15} /></span></div></DocumentLink>)}</div></section>
   </>;
 }
 function Comparison({

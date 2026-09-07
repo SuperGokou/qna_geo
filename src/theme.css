@@ -1,4 +1,25 @@
 /* Neutral research workspace with a restrained editorial accent. */
+.evidence-meta{display:flex;flex-wrap:wrap;gap:8px 22px;color:#74777d;font-size:11px;padding:0 0 22px}
+.focus-tabs{display:flex;border-bottom:1px solid var(--line);gap:24px;min-height:45px}
+.focus-tabs button{padding:10px 0;border-bottom:2px solid transparent;font-size:13px;color:#666b74}
+.focus-tabs button[aria-selected=true]{border-color:#863b46;color:#793642;font-weight:600}
+.focus-note{font-size:12px;color:#737781;margin:16px 0;line-height:1.8}
+.focus-columns,.focus-facts{display:grid;grid-template-columns:105px minmax(0,1fr) minmax(0,1fr);gap:18px}
+.focus-columns{padding:12px 0;border-bottom:1px solid var(--line);font-size:11px;color:#767b84}
+.focus-vendor{border-bottom:1px solid var(--line);padding:18px 0 12px}
+.focus-facts h3{display:flex;gap:8px;align-items:baseline;font-size:13px;line-height:1.8}
+.focus-facts p{font-size:12px;color:#555e6b;line-height:1.9}
+.focus-facts .focus-gap{color:#846c44}
+.focus-mobile-label{display:none}
+.meeting-questions{margin:12px 0 0 123px}
+.meeting-questions summary{display:flex;align-items:center;gap:8px;cursor:pointer;font-size:12px;color:#79404e;list-style:none;width:fit-content;padding:5px 0}
+.meeting-questions summary::-webkit-details-marker{display:none}
+.meeting-questions[open] summary svg{transform:rotate(180deg)}
+.meeting-questions ol{margin:12px 0;padding-left:18px;color:#535e6b;font-size:13px;line-height:1.9}
+.meeting-questions li+li{margin-top:8px}
+.meeting-actions{display:flex;flex-wrap:wrap;gap:14px 20px;padding:8px 0}
+@media(max-width:1240px){.focus-columns,.focus-facts{grid-template-columns:82px minmax(0,1fr) minmax(0,1fr);gap:12px}.meeting-questions{margin-left:94px}.focus-tabs{gap:18px}}
+@media(max-width:680px){.focus-tabs{gap:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}.focus-tabs button{font-size:12px;padding:12px 3px}.focus-columns{display:none}.focus-facts{grid-template-columns:minmax(0,1fr);gap:8px}.focus-facts h3{font-size:14px}.focus-facts p{font-size:13px}.focus-mobile-label{display:inline;margin-right:10px;font-size:11px;color:#7b7d83}.meeting-questions{margin-left:0}.meeting-questions summary{font-size:13px}.evidence-meta{gap:7px 15px}.focus-review .section-title{align-items:flex-start;flex-wrap:wrap}}
 :root {color-scheme:light;color:#292c32;background:#fff;--green:#863b46;--ink:#292c32;--muted:#6c7078;--line:#e0e2e6;--light:#f4f4f6}
 body,.app,.work-area{background:#fff}
 ::selection{background:#eadcdf}
