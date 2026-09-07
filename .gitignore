@@ -1,0 +1,17 @@
+node_modules/
+dist/
+.env
+.env.*
+!.env.example
+logs/
+tmp/
+data/
+private/
+public/previews/
+.DS_Store
+knowledge/
+worker/assets/
+.wrangler/
+.dev.vars
+.access.txt
+public/runtime-config.json
