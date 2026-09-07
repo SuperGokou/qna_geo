@@ -33,6 +33,14 @@ await page.getByRole('textbox',{name:'向决策助手提问'}).fill('帮我做�
 await page.getByRole('button',{name:'发送问题',exact:true}).click();
 await page.getByText('这个入口仅处理 GEO 技术、供应商评估及扬州/泰州区域代理合作问题，暂不回答其他主题。',{exact:true}).waitFor();
 await page.getByRole('button',{name:'新建对话'}).click();
+if (process.env.QA_LIVE === '1') {
+  await page.getByRole('textbox',{name:'向决策助手提问'}).fill('迈富时80%利润能直接作为我方净利润吗？');
+  await page.getByRole('button',{name:'发送问题',exact:true}).click();
+  await page.locator('.assistant-message .citation-links button').first().waitFor({ timeout: 70000 });
+  await page.screenshot({ path:'tmp/live-answer.png', fullPage:true });
+  console.log(JSON.stringify({ liveBrowserAnswer: await page.locator('.answer-summary').last().textContent() }));
+  await page.getByRole('button',{name:'新建对话'}).click();
+}
 await page.setViewportSize({width:390,height:844});
 await page.screenshot({path:'tmp/mobile.png',fullPage:true});
 await page.getByRole('button',{name:'打开决策助手'}).click();
